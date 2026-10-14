@@ -31,7 +31,7 @@ function Shell() {
           <Link to="/dashboard" className="flex items-center gap-2 font-display text-lg"><Plane className="h-5 w-5 text-primary" /> 機票降價通知</Link>
           <div className="flex items-center gap-3 text-sm">
             <span className="hidden sm:inline text-ink-foreground/70">{user.email}</span>
-            <Button variant="heroGhost" size="sm" onClick={signOut}><LogOut /> Sign out</Button>
+            <Button variant="heroGhost" size="sm" onClick={signOut}><LogOut /> 登出</Button>
           </div>
         </div>
       </header>

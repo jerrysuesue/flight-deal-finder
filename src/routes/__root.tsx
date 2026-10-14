@@ -80,8 +80,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "機票降價通知 Flight Price Notifier" },
-      { name: "description", content: "Get emailed when flights from Taipei drop below your budget." },
+      { title: "機票降價通知" },
+      { name: "description", content: "台北出發的機票降到你的預算，立刻寄信通知你。" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

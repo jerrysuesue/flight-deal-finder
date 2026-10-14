@@ -12,10 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "My alerts — 機票降價通知" },
-      { name: "description", content: "Your flight price alerts from Taipei." },
-      { property: "og:title", content: "My alerts — 機票降價通知" },
-      { property: "og:description", content: "Your flight price alerts from Taipei." },
+      { title: "我的降價通知 — 機票降價通知" },
+      { name: "description", content: "你的台北出發機票降價通知。" },
+      { property: "og:title", content: "我的降價通知 — 機票降價通知" },
+      { property: "og:description", content: "你的台北出發機票降價通知。" },
     ],
   }),
   component: Dashboard,
@@ -44,8 +44,8 @@ function Dashboard() {
       const { error } = await supabase.from("price_alerts").insert({ route_id: routeId, target_price: Number(target) });
       if (error) throw error;
     },
-    onSuccess: () => { setTarget(""); setRouteId(""); qc.invalidateQueries({ queryKey: ["alerts"] }); toast.success("Alert created"); },
-    onError: (e: Error) => toast.error(e.message.includes("duplicate") ? "You already watch this route" : e.message),
+    onSuccess: () => { setTarget(""); setRouteId(""); qc.invalidateQueries({ queryKey: ["alerts"] }); toast.success("已建立降價通知"); },
+    onError: (e: Error) => toast.error(e.message.includes("duplicate") ? "你已經在追蹤這條航線了" : e.message),
   });
   const toggle = useMutation({
     mutationFn: async ({ id, active }: { id: string; active: boolean }) => { await supabase.from("price_alerts").update({ active }).eq("id", id); },
@@ -58,27 +58,27 @@ function Dashboard() {
 
   return (
     <div>
-      <h1 className="text-4xl">Your price alerts</h1>
-      <p className="mt-2 text-muted-foreground">We'll email you when the cheapest fare hits your target.</p>
+      <h1 className="text-4xl">我的降價通知</h1>
+      <p className="mt-2 text-muted-foreground">最低票價一降到你的目標價，我們就寄信通知你。</p>
 
       <form
         onSubmit={(e) => { e.preventDefault(); if (routeId && Number(target) > 0) add.mutate(); }}
         className="mt-8 grid gap-3 rounded-2xl bg-card p-5 shadow-ticket sm:grid-cols-[1fr_180px_auto]"
       >
         <Select value={routeId} onValueChange={setRouteId}>
-          <SelectTrigger><SelectValue placeholder="Choose a destination from TPE" /></SelectTrigger>
+          <SelectTrigger><SelectValue placeholder="選擇台北出發的目的地" /></SelectTrigger>
           <SelectContent>
             {routes.data?.map((r) => (
-              <SelectItem key={r.id} value={r.id}>{r.city_zh} {r.city_en} ({r.destination}) · now NT${r.current_lowest.toLocaleString()}</SelectItem>
+              <SelectItem key={r.id} value={r.id}>{r.city_zh} {r.city_en} ({r.destination}) · 目前 NT${r.current_lowest.toLocaleString()}</SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <Input type="number" min={1} placeholder="Target NT$" value={target} onChange={(e) => setTarget(e.target.value)} />
-        <Button type="submit" variant="hero" disabled={add.isPending}>Add alert</Button>
+        <Input type="number" min={1} placeholder="目標價 NT$" value={target} onChange={(e) => setTarget(e.target.value)} />
+        <Button type="submit" variant="hero" disabled={add.isPending}>新增通知</Button>
       </form>
 
       <div className="mt-8 space-y-3">
-        {alerts.data?.length === 0 && <p className="py-12 text-center text-muted-foreground">No alerts yet — pick a route above.</p>}
+        {alerts.data?.length === 0 && <p className="py-12 text-center text-muted-foreground">還沒有通知——從上方選一條航線開始。</p>}
         {alerts.data?.map((a) => {
           const r = a.routes!;
           const hit = r.current_lowest <= a.target_price;
@@ -89,16 +89,16 @@ function Dashboard() {
                 <div className="font-display text-2xl">{r.city_zh} <span className="text-base text-muted-foreground">{r.city_en}</span></div>
               </div>
               <div className="text-sm">
-                <div className="text-muted-foreground">Target</div>
+                <div className="text-muted-foreground">目標價</div>
                 <div className="font-display text-lg">NT${a.target_price.toLocaleString()}</div>
               </div>
               <div className="text-sm">
-                <div className="text-muted-foreground">Lowest now</div>
+                <div className="text-muted-foreground">目前最低</div>
                 <div className={`font-display text-lg ${hit ? "text-success" : ""}`}>NT${r.current_lowest.toLocaleString()}</div>
               </div>
-              {hit && <span className="flex items-center gap-1 rounded-full bg-accent px-3 py-1 text-xs font-semibold"><BellRing className="h-3 w-3" /> Deal!</span>}
-              <Switch checked={a.active} onCheckedChange={(v) => toggle.mutate({ id: a.id, active: v })} aria-label="Alert on/off" />
-              <Button variant="ghost" size="icon" onClick={() => remove.mutate(a.id)} aria-label="Delete alert"><Trash2 /></Button>
+              {hit && <span className="flex items-center gap-1 rounded-full bg-accent px-3 py-1 text-xs font-semibold"><BellRing className="h-3 w-3" /> 達標！</span>}
+              <Switch checked={a.active} onCheckedChange={(v) => toggle.mutate({ id: a.id, active: v })} aria-label="開關通知" />
+              <Button variant="ghost" size="icon" onClick={() => remove.mutate(a.id)} aria-label="刪除通知"><Trash2 /></Button>
             </div>
           );
         })}

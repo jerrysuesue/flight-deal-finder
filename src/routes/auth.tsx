@@ -11,10 +11,10 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — 機票降價通知" },
-      { name: "description", content: "Sign in to manage your flight price alerts from Taipei." },
-      { property: "og:title", content: "Sign in — 機票降價通知" },
-      { property: "og:description", content: "Manage your flight price alerts." },
+      { title: "登入 — 機票降價通知" },
+      { name: "description", content: "登入以管理你的台北出發機票降價通知。" },
+      { property: "og:title", content: "登入 — 機票降價通知" },
+      { property: "og:description", content: "管理你的機票降價通知。" },
     ],
   }),
   component: AuthPage,
@@ -43,7 +43,7 @@ function AuthPage() {
     if (mode === "up") {
       const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin + "/auth" } });
       if (error) toast.error(error.message);
-      else toast.success("Check your email to confirm your account.");
+      else toast.success("請到信箱收確認信，完成帳號開通。");
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) toast.error(error.message);
@@ -60,16 +60,16 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-secondary px-4">
       <div className="w-full max-w-sm rounded-2xl bg-card p-8 shadow-ticket">
         <Link to="/" className="mb-6 flex items-center gap-2 font-display text-xl"><Plane className="h-5 w-5 text-primary" /> 機票降價通知</Link>
-        <h1 className="text-3xl">{mode === "in" ? "Welcome back" : "Start watching fares"}</h1>
-        <Button variant="outline" className="mt-6 w-full" onClick={google}>Continue with Google</Button>
-        <div className="my-4 text-center text-xs text-muted-foreground">or</div>
+        <h1 className="text-3xl">{mode === "in" ? "歡迎回來" : "開始盯票價"}</h1>
+        <Button variant="outline" className="mt-6 w-full" onClick={google}>使用 Google 繼續</Button>
+        <div className="my-4 text-center text-xs text-muted-foreground">或</div>
         <form onSubmit={submit} className="space-y-3">
-          <div><Label htmlFor="email">Email</Label><Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-          <div><Label htmlFor="pw">Password</Label><Input id="pw" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} /></div>
-          <Button type="submit" variant="hero" className="w-full" disabled={busy}>{mode === "in" ? "Sign in" : "Create account"}</Button>
+          <div><Label htmlFor="email">電子郵件</Label><Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
+          <div><Label htmlFor="pw">密碼</Label><Input id="pw" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+          <Button type="submit" variant="hero" className="w-full" disabled={busy}>{mode === "in" ? "登入" : "建立帳號"}</Button>
         </form>
         <button className="mt-4 w-full text-sm text-muted-foreground hover:text-foreground" onClick={() => setMode(mode === "in" ? "up" : "in")}>
-          {mode === "in" ? "New here? Create an account" : "Have an account? Sign in"}
+          {mode === "in" ? "第一次來？建立帳號" : "已經有帳號了？登入"}
         </button>
       </div>
     </div>
