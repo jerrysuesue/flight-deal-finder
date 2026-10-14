@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Trash2, BellRing } from "lucide-react";
@@ -7,21 +6,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { usePageMeta } from "@/lib/page-meta";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({
-    meta: [
-      { title: "我的降價通知 — 機票降價通知" },
-      { name: "description", content: "你的台北出發機票降價通知。" },
-      { property: "og:title", content: "我的降價通知 — 機票降價通知" },
-      { property: "og:description", content: "你的台北出發機票降價通知。" },
-    ],
-  }),
-  component: Dashboard,
-});
-
-function Dashboard() {
+export function Dashboard() {
+  usePageMeta({
+    title: "我的降價通知 — 機票降價通知",
+    description: "你的台北出發機票降價通知。",
+    ogTitle: "我的降價通知 — 機票降價通知",
+    ogDescription: "你的台北出發機票降價通知。",
+  });
   const qc = useQueryClient();
   const [routeId, setRouteId] = useState("");
   const [target, setTarget] = useState("");

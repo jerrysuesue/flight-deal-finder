@@ -1,23 +1,18 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Bell, Plane, Target, Mail, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { usePageMeta } from "@/lib/page-meta";
 import hero from "@/assets/hero.jpg";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "機票降價通知 — 台北出發，低價入手" },
-      { name: "description", content: "為台北出發的熱門航線設定目標價格，最低票價一降到你的預算，立刻寄信通知你。" },
-      { property: "og:title", content: "機票降價通知" },
-      { property: "og:description", content: "說出你的預算，我們幫你盯票價，降到目標價立刻通知。" },
-    ],
-  }),
-  component: Landing,
-});
-
-function Landing() {
+export function Landing() {
+  usePageMeta({
+    title: "機票降價通知 — 台北出發，低價入手",
+    description: "為台北出發的熱門航線設定目標價格，最低票價一降到你的預算，立刻寄信通知你。",
+    ogTitle: "機票降價通知",
+    ogDescription: "說出你的預算，我們幫你盯票價，降到目標價立刻通知。",
+  });
   const { data: routes } = useQuery({
     queryKey: ["routes"],
     queryFn: async () => {
@@ -36,7 +31,7 @@ function Landing() {
           <Link to="/" className="flex items-center gap-2 font-display text-xl">
             <Plane className="h-5 w-5 text-primary" /> 機票降價通知
           </Link>
-          <Button asChild variant="heroGhost" size="sm"><Link to="/auth">登入</Link></Button>
+          <Button asChild variant="heroGhost" size="sm"><Link to="/sign-in">登入</Link></Button>
         </nav>
         <div className="relative z-10 mx-auto max-w-6xl px-6 pt-20 pb-28">
           <p className="mb-4 text-sm uppercase tracking-[0.25em] text-primary">台北出發 · 低價入手</p>
@@ -47,7 +42,7 @@ function Landing() {
             不在意確切的出發日期？為台北出發的熱門航線設定目標價格，最低票價一降到你的預算，我們立刻寄信通知你。
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Button asChild variant="hero" size="lg"><Link to="/auth">免費開始盯票價 <ArrowRight /></Link></Button>
+            <Button asChild variant="hero" size="lg"><Link to="/sign-up">免費開始盯票價 <ArrowRight /></Link></Button>
             <Button asChild variant="heroGhost" size="lg"><a href="#routes">看看今日票價</a></Button>
           </div>
         </div>
@@ -93,7 +88,7 @@ function Landing() {
 
       <section className="mx-auto max-w-3xl px-6 py-24 text-center">
         <h2 className="text-4xl md:text-5xl">下一趟旅行，看價格，不看日期。</h2>
-        <Button asChild variant="hero" size="lg" className="mt-8"><Link to="/auth">免費建立降價通知</Link></Button>
+        <Button asChild variant="hero" size="lg" className="mt-8"><Link to="/sign-up">免費建立降價通知</Link></Button>
       </section>
       <footer className="border-t py-8 text-center text-sm text-muted-foreground">© 2026 機票降價通知</footer>
     </div>

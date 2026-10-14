@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { Plane } from "lucide-react";
 import { toast } from "sonner";
@@ -7,32 +7,26 @@ import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { usePageMeta } from "@/lib/page-meta";
 
-export const Route = createFileRoute("/auth")({
-  head: () => ({
-    meta: [
-      { title: "登入 — 機票降價通知" },
-      { name: "description", content: "登入以管理你的台北出發機票降價通知。" },
-      { property: "og:title", content: "登入 — 機票降價通知" },
-      { property: "og:description", content: "管理你的機票降價通知。" },
-    ],
-  }),
-  component: AuthPage,
-});
-
-function AuthPage() {
+export function AuthPage({ mode }: { mode: "in" | "up" }) {
+  usePageMeta({
+    title: "登入 — 機票降價通知",
+    description: "登入以管理你的台北出發機票降價通知。",
+    ogTitle: "登入 — 機票降價通知",
+    ogDescription: "管理你的機票降價通知。",
+  });
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"in" | "up">("in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard", replace: true });
+      if (data.session) navigate("/app", { replace: true });
     });
     const { data } = supabase.auth.onAuthStateChange((_e, s) => {
-      if (s) navigate({ to: "/dashboard", replace: true });
+      if (s) navigate("/app", { replace: true });
     });
     return () => data.subscription.unsubscribe();
   }, [navigate]);
@@ -41,7 +35,7 @@ function AuthPage() {
     e.preventDefault();
     setBusy(true);
     if (mode === "up") {
-      const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin + "/auth" } });
+      const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin + "/sign-in" } });
       if (error) toast.error(error.message);
       else toast.success("請到信箱收確認信，完成帳號開通。");
     } else {
@@ -52,7 +46,7 @@ function AuthPage() {
   }
 
   async function google() {
-    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" });
+    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/sign-in" });
     if (r.error) toast.error(String(r.error.message ?? r.error));
   }
 
@@ -68,7 +62,7 @@ function AuthPage() {
           <div><Label htmlFor="pw">密碼</Label><Input id="pw" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} /></div>
           <Button type="submit" variant="hero" className="w-full" disabled={busy}>{mode === "in" ? "登入" : "建立帳號"}</Button>
         </form>
-        <button className="mt-4 w-full text-sm text-muted-foreground hover:text-foreground" onClick={() => setMode(mode === "in" ? "up" : "in")}>
+        <button className="mt-4 w-full text-sm text-muted-foreground hover:text-foreground" onClick={() => navigate(mode === "in" ? "/sign-up" : "/sign-in")}>
           {mode === "in" ? "第一次來？建立帳號" : "已經有帳號了？登入"}
         </button>
       </div>
