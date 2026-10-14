@@ -14,7 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      price_alerts: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          last_notified_at: string | null
+          route_id: string
+          target_price: number
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          last_notified_at?: string | null
+          route_id: string
+          target_price: number
+          user_id?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          last_notified_at?: string | null
+          route_id?: string
+          target_price?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_alerts_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      routes: {
+        Row: {
+          city_en: string
+          city_zh: string
+          currency: string
+          current_lowest: number
+          destination: string
+          id: string
+          origin: string
+          updated_at: string
+        }
+        Insert: {
+          city_en: string
+          city_zh: string
+          currency?: string
+          current_lowest: number
+          destination: string
+          id?: string
+          origin?: string
+          updated_at?: string
+        }
+        Update: {
+          city_en?: string
+          city_zh?: string
+          currency?: string
+          current_lowest?: number
+          destination?: string
+          id?: string
+          origin?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
